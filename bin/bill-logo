@@ -1,0 +1,43 @@
+#!/bin/bash
+# Genera el logo de Bill Cipher para fastfetch (arte de bloques con color real),
+# pintado con el color principal del esquema de Caelestia. Solo se regenera si cambió el esquema.
+MASK=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-falls/bill-mask.png
+OUT=~/.cache/fastfetch-bill.ansi
+SCHEME=${XDG_STATE_HOME:-$HOME/.local/state}/caelestia/scheme.json
+COLS=${1:-18}
+[ -f "$OUT" ] && [ "$OUT" -nt "$SCHEME" ] && [ "$OUT" -nt "$MASK" ] && [ "$OUT" -nt "$0" ] && exit 0
+mkdir -p ~/.cache
+python3 -I - "$MASK" "$SCHEME" "$OUT" "$COLS" <<'PY'
+import json, re, subprocess, sys
+mask, scheme, out, cols = sys.argv[1], sys.argv[2], sys.argv[3], int(sys.argv[4])
+try:
+    p = json.load(open(scheme))["colours"]["primary"]
+    assert re.fullmatch(r"[0-9a-fA-F]{6}", p)
+except Exception:
+    p = "a8c8ff"
+pr, pg, pb = (int(p[i:i + 2], 16) for i in (0, 2, 4))
+# Redimensionar la máscara: cada carácter = 1 píxel de ancho x 2 de alto
+w, h = map(int, subprocess.check_output(["magick", "identify", "-format", "%w %h", mask]).split())
+rows = round(cols * h / w / 2)
+raw = subprocess.check_output(["magick", mask, "-resize", f"{cols}x{rows * 2}!", "-depth", "8", "gray:-"])
+px = lambda x, y: raw[y * cols + x] / 255
+E = "\x1b["
+def col(a, layer):  # mezcla el color principal con transparencia (umbral suave)
+    return f"{E}{layer};2;{int(pr * a)};{int(pg * a)};{int(pb * a)}m"
+lines = []
+for r in range(rows):
+    s = ""
+    for x in range(cols):
+        top, bot = px(x, 2 * r), px(x, 2 * r + 1)
+        t, b = top > 0.18, bot > 0.18
+        if t and b:
+            s += col(max(top, .55), 38) + col(max(bot, .55), 48) + "▀" + f"{E}0m"
+        elif t:
+            s += col(max(top, .55), 38) + "▀" + f"{E}0m"
+        elif b:
+            s += col(max(bot, .55), 38) + "▄" + f"{E}0m"
+        else:
+            s += " "
+    lines.append(s)
+open(out, "w").write("\n".join(lines) + "\n")
+PY

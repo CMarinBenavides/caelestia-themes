@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Gravity Falls
+Description=El Tío Stan frente a la Cabaña del Misterio
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/gravity-falls
+ScriptFile=/usr/share/plymouth/themes/gravity-falls/gravity-falls.script

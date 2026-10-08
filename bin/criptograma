@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+# Criptograma del día al estilo de los créditos de Gravity Falls.
+# Uso: criptograma          -> muestra la frase cifrada de hoy
+#      criptograma --sol    -> muestra la solución
+import datetime
+import sys
+import unicodedata
+
+FRASES = [
+    "NO CONFIES EN NADIE",
+    "STAN NO ES LO QUE PARECE",
+    "BIENVENIDOS A GRAVITY FALLS",
+    "LA REALIDAD ES UNA ILUSION",
+    "EL UNIVERSO ES UN HOLOGRAMA",
+    "COMPRA ORO ADIOS",
+    "SIEMPRE TE ESTARE OBSERVANDO",
+    "EL DIARIO TRES GUARDA SECRETOS",
+    "NADA ES LO QUE PARECE",
+    "LOS GEMELOS DEL MISTERIO",
+    "LA CABAÑA DEL MISTERIO ABRE HOY",
+    "CUIDADO CON EL TRIANGULO",
+    "EL VERANO NUNCA TERMINA",
+    "EL RAROMAGEDON SE ACERCA",
+]
+
+
+def limpiar(texto):
+    # Quita tildes (la Ñ pasa a N) para cifrar solo A-Z
+    t = unicodedata.normalize("NFD", texto)
+    return "".join(c for c in t if unicodedata.category(c) != "Mn").upper()
+
+
+def atbash(t):
+    return "".join(chr(155 - ord(c)) if "A" <= c <= "Z" else c for c in t)
+
+
+def cesar(t, n=3):
+    return "".join(chr((ord(c) - 65 + n) % 26 + 65) if "A" <= c <= "Z" else c for c in t)
+
+
+def a1z26(t):
+    return "  ".join("-".join(str(ord(c) - 64) for c in p if "A" <= c <= "Z") for p in t.split())
+
+
+CIFRADOS = [("Atbash", atbash), ("César +3", cesar), ("A1Z26", a1z26)]
+
+
+def main():
+    dia = datetime.date.today().toordinal()
+    frase = limpiar(FRASES[dia % len(FRASES)])
+    nombre, cifrar = CIFRADOS[dia % len(CIFRADOS)]
+    color, dim, reset = "\x1b[38;5;17m", "\x1b[2m", "\x1b[0m"
+    if "--sol" in sys.argv:
+        print(f"🔓 {frase}")
+    else:
+        print(f"  {color}🔺 {cifrar(frase)}{reset}  {dim}({nombre} · escribe 'descifrar'){reset}")
+
+
+if __name__ == "__main__":
+    main()
