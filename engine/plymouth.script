@@ -1,8 +1,8 @@
 # Caelestia Themes — animación de Plymouth (común a todos los temas).
 # install.sh sustituye los valores @...@ según el tema.
-#   Al encender: boot-0..N.png y luego "mensaje.png" desde el fotograma MSG_FRAME.
+#   Al encender: boot-0..N.png y luego "message.png" desde el fotograma MSG_FRAME.
 #   Al apagar/reiniciar: off-0..M.png si existen; si no, el último fotograma del arranque fijo.
-#   El mensaje "mensaje-adios.png" aparece desde el principio del apagado.
+#   El mensaje "message-goodbye.png" aparece desde el principio del apagado.
 
 Window.SetBackgroundTopColor(0, 0, 0);
 Window.SetBackgroundBottomColor(0, 0, 0);
@@ -43,13 +43,13 @@ if (apagando) {
         frames[0] = load_frame("boot-" + (BOOT_FRAMES - 1) + ".png");
         total = 1;
     }
-    msg_img = load_message("mensaje-adios.png");
+    msg_img = load_message("message-goodbye.png");
     msg_from = 0;
 } else {
     for (i = 0; i < BOOT_FRAMES; i++)
         frames[i] = load_frame("boot-" + i + ".png");
     total = BOOT_FRAMES;
-    msg_img = load_message("mensaje.png");
+    msg_img = load_message("message.png");
     msg_from = MSG_FRAME;
 }
 

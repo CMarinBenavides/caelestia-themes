@@ -1,0 +1,18 @@
+#!/bin/bash
+# theme-play: reproduce el sonido del tema activo.
+#   theme-play login      al iniciar sesión (lo llama Hyprland)
+#   theme-play shutdown   al apagar o reiniciar (lo llama el servicio theme-shutdown)
+CONF=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-themes
+SHARE=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-themes
+VOLUME=${CAELESTIA_THEMES_VOLUME:-0.2}
+EVENT=${1:-login}
+
+ID=$(cat "$CONF/active" 2>/dev/null) || exit 0
+[ -n "$ID" ] || exit 0
+[ -e "$CONF/muted" ] && exit 0
+SOUND="$SHARE/$ID/$EVENT.ogg"
+[ -f "$SOUND" ] || exit 0
+
+# Al iniciar sesión se espera un poco a que el audio esté listo
+[ "$EVENT" = login ] && sleep 2
+exec pw-play --volume="$VOLUME" "$SOUND"

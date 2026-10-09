@@ -1,0 +1,97 @@
+#!/bin/bash
+# theme: cambia el tema de Caelestia.
+#   theme list                        installed themes
+#   theme <name> [--no-plymouth]      activate a theme (e.g. gravity-falls, ngnl-zero)
+#   theme default [--no-plymouth]     back to the original Caelestia
+#   theme status                      show the active theme
+set -uo pipefail
+
+CONF=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-themes
+SHARE=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-themes
+SHELL_JSON=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia/shell.json
+
+# Directorio de wallpapers configurado en Caelestia
+wall_dir() {
+    python3 -I -c 'import json,os,sys
+try: print(os.path.expanduser(json.load(open(sys.argv[1]))["paths"]["wallpaperDir"]))
+except Exception: print(os.path.expanduser("~/Pictures/Wallpapers"))' "$SHELL_JSON"
+}
+# conf <tema> <CLAVE> → valor de su theme.conf
+conf() { grep -Po "^$2=\"?\K[^\"#]*" "$SHARE/$1/theme.conf" 2>/dev/null | head -1; }
+active() { cat "$CONF/active" 2>/dev/null; }
+plymouth_theme() { grep -Po '^Theme=\K.*' /etc/plymouth/plymouthd.conf 2>/dev/null || echo "?"; }
+installed() { for d in "$SHARE"/*/; do [ -f "$d/theme.conf" ] && basename "$d"; done; }
+
+# Cambia el tema de Plymouth y regenera la imagen de arranque (necesita sudo)
+set_plymouth() {
+    local want=$1
+    command -v plymouth-set-default-theme >/dev/null || { echo "  · Plymouth is not installed, skipping."; return; }
+    if [ "$(plymouth_theme)" = "$want" ]; then echo "  · Plymouth already uses '$want'."; return; fi
+    if [ "$want" != bgrt ] && [ ! -d "/usr/share/plymouth/themes/$want" ]; then
+        echo "  · Plymouth theme '$want' is not installed (run install.sh)."; return
+    fi
+    echo "  · Switching Plymouth to '$want' and rebuilding the boot image (asks for sudo)…"
+    sudo sed -i "s/^Theme=.*/Theme=$want/" /etc/plymouth/plymouthd.conf && sudo mkinitcpio -P >/dev/null \
+        && echo "  · Plymouth ready." || echo "  ! Could not switch Plymouth."
+}
+
+# Saca los wallpapers de un tema de la carpeta de Caelestia (o los vuelve a poner),
+# para que el modo aleatorio solo use los del tema activo
+store_wallpapers() {
+    local id=$1 folder wd; folder=$(conf "$id" WALLPAPER_FOLDER); wd=$(wall_dir)
+    [ -n "$folder" ] && [ -d "$wd/$folder" ] || return 0
+    rm -rf "$SHARE/$id/wallpapers"; mv "$wd/$folder" "$SHARE/$id/wallpapers"
+}
+restore_wallpapers() {
+    local id=$1 folder wd; folder=$(conf "$id" WALLPAPER_FOLDER); wd=$(wall_dir)
+    [ -n "$folder" ] && [ -d "$SHARE/$id/wallpapers" ] && [ ! -d "$wd/$folder" ] || return 0
+    mv "$SHARE/$id/wallpapers" "$wd/$folder"
+}
+
+list() {
+    local a; a=$(active)
+    echo "Installed themes:"
+    for id in $(installed); do
+        printf '  %s %-16s %s — %s\n' "$([ "$id" = "$a" ] && echo '●' || echo '○')" "$id" "$(conf "$id" EMOJI)" "$(conf "$id" NAME)"
+    done
+    printf '  %s %-16s ✨ — Original Caelestia\n' "$([ -z "$a" ] && echo '●' || echo '○')" default
+}
+
+status() {
+    local a; a=$(active)
+    if [ -n "$a" ]; then echo "$(conf "$a" EMOJI) Active theme: $(conf "$a" NAME) ($a)"; else echo "✨ Active theme: original Caelestia"; fi
+    echo "  Plymouth: $(plymouth_theme)"
+    [ -e "$CONF/muted" ] && echo "  Sounds:   muted" || echo "  Sounds:   on"
+}
+
+activate() {
+    local id=$1 opt=${2:-} prev; prev=$(active)
+    [ -f "$SHARE/$id/theme.conf" ] || { echo "Theme '$id' is not installed. Available themes:"; list; exit 1; }
+    echo "$(conf "$id" EMOJI) Activating $(conf "$id" NAME)…"
+    [ -n "$prev" ] && [ "$prev" != "$id" ] && store_wallpapers "$prev"
+    mkdir -p "$CONF"; echo "$id" > "$CONF/active"
+    restore_wallpapers "$id"
+    [ "$opt" = "--no-plymouth" ] || set_plymouth "caelestia-$id"
+    local folder wd; folder=$(conf "$id" WALLPAPER_FOLDER); wd=$(wall_dir)
+    [ -n "$folder" ] && [ -d "$wd/$folder" ] && caelestia wallpaper -r "$wd/$folder" >/dev/null 2>&1 \
+        && echo "  · Theme wallpaper applied."
+    echo "Done. Open a new terminal to see the theme greeting."
+}
+
+deactivate() {
+    local opt=${1:-} prev; prev=$(active)
+    echo "✨ Back to the original Caelestia…"
+    [ -n "$prev" ] && store_wallpapers "$prev"
+    rm -f "$CONF/active"
+    [ "$opt" = "--no-plymouth" ] || set_plymouth bgrt
+    caelestia wallpaper -r "$(wall_dir)" >/dev/null 2>&1 && echo "  · Default wallpaper applied."
+    echo "Done. New terminals will use the original Caelestia greeting."
+}
+
+case "${1:-status}" in
+    status) status ;;
+    list|ls) list ;;
+    default|original|normal) deactivate "${2:-}" ;;
+    -h|--help|help) sed -n '2,7p' "$0" ;;
+    *) activate "$1" "${2:-}" ;;
+esac

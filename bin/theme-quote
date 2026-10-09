@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+# theme-quote: la frase del día del tema activo.
+#   theme-quote           muestra la frase de hoy (cifrada si el tema lo pide)
+#   theme-quote --solve   muestra la solución
+import datetime
+import os
+import sys
+import unicodedata
+
+HOME = os.path.expanduser("~")
+CONF = os.path.join(os.environ.get("XDG_CONFIG_HOME", f"{HOME}/.config"), "caelestia-themes")
+SHARE = os.path.join(os.environ.get("XDG_DATA_HOME", f"{HOME}/.local/share"), "caelestia-themes")
+
+
+def read_conf(path):
+    # Lee un theme.conf (CLAVE="valor"), ignorando comentarios
+    conf = {}
+    for line in open(path, encoding="utf-8"):
+        line = line.strip()
+        if "=" in line and not line.startswith("#"):
+            k, v = line.split("=", 1)
+            conf[k.strip()] = v.split("#")[0].strip().strip('"')
+    return conf
+
+
+def clean(text):
+    # Quita tildes (la Ñ pasa a N) para cifrar solo A-Z
+    t = unicodedata.normalize("NFD", text)
+    return "".join(c for c in t if unicodedata.category(c) != "Mn").upper()
+
+
+def atbash(t):
+    return "".join(chr(155 - ord(c)) if "A" <= c <= "Z" else c for c in t)
+
+
+def caesar(t, n=3):
+    return "".join(chr((ord(c) - 65 + n) % 26 + 65) if "A" <= c <= "Z" else c for c in t)
+
+
+def a1z26(t):
+    return "  ".join("-".join(str(ord(c) - 64) for c in p if "A" <= c <= "Z") for p in t.split())
+
+
+# Un cifrado distinto cada día, como en los créditos de Gravity Falls
+CIPHERS = [("Atbash", atbash), ("Caesar +3", caesar), ("A1Z26", a1z26)]
+
+
+def main():
+    try:
+        theme = open(os.path.join(CONF, "active")).read().strip()
+        conf = read_conf(os.path.join(SHARE, theme, "theme.conf"))
+        quotes = [l.strip() for l in open(os.path.join(SHARE, theme, "quotes.txt"), encoding="utf-8") if l.strip()]
+    except (OSError, ValueError):
+        return
+    if not quotes:
+        return
+    day = datetime.date.today().toordinal()
+    quote = quotes[day % len(quotes)]
+    color, dim, reset = "\x1b[38;5;17m", "\x1b[2m", "\x1b[0m"
+    emoji = conf.get("EMOJI", "✨")[:1]
+    hint = conf.get("QUOTE_HINT", "")
+
+    if conf.get("QUOTES_MODE") == "cipher":
+        quote = clean(quote)
+        name, encode = CIPHERS[day % len(CIPHERS)]
+        if "--solve" in sys.argv:
+            print(f"🔓 {quote}")
+        else:
+            print(f"  {color}{emoji} {encode(quote)}{reset}  {dim}({name} · {hint}){reset}")
+    else:
+        print(f"  {color}{emoji} {quote}{reset}" + (f"  {dim}({hint}){reset}" if hint else ""))
+
+
+if __name__ == "__main__":
+    main()

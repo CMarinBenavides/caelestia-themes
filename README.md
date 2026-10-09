@@ -1,53 +1,57 @@
 # ✨ Caelestia Themes
 
-Temas de series y películas para [Caelestia](https://github.com/caelestia-dots/shell) en Arch Linux + Hyprland.
-Cada tema cambia la **animación de arranque y apagado**, los **sonidos**, el **saludo de la terminal** y los **wallpapers**,
-y con un solo comando cambias entre temas o vuelves a Caelestia original.
+*[Leer en español](README.es.md)*
+
+Series and movie themes for [Caelestia](https://github.com/caelestia-dots/shell) on Arch Linux + Hyprland.
+Each theme changes the **boot and shutdown animation**, the **sounds**, the **terminal greeting** and the **wallpapers**,
+and a single command switches between themes or back to the original Caelestia.
 
 ```fish
-tema lista            # temas instalados
-tema gravity-falls    # 🌲🔺 Caelestia Falls
-tema ngnl-zero        # 🎲♟️ Caelestia Zero
-tema normal           # ✨ Caelestia original
+theme list             # installed themes
+theme gravity-falls    # 🌲🔺 Caelestia Falls
+theme ngnl-zero        # 🎲♟️ Caelestia Zero
+theme default          # ✨ original Caelestia
 ```
 
-## Temas
+## Themes
 
 ### 🌲🔺 Caelestia Falls — *Gravity Falls*
 
-| Momento | |
+| Moment | |
 |---|---|
-| 🎩 Arranque | El Tío Stan aparece en un destello frente a la Cabaña del Misterio y se queda en el letrero *"MYSTERY HACK"* con `YRVMEVMRWL HGZMULIW` |
-| 👋 Apagado | El letrero con `SZHGZ OFVTL HGZMOVB` |
-| 🔺 Al iniciar sesión | El susurro invertido de Bill Cipher del final de la intro |
-| 🖥️ Terminal | Título *Caelestia Falls*, un **criptograma del día** (Atbash, César +3 o A1Z26; `descifrar` para la solución) y la silueta de Bill |
-| 🖼️ Wallpapers | ~44 de Wallhaven |
+| 🎩 Boot | Grunkle Stan appears in a flash in front of the Mystery Shack and stays on the *"MYSTERY HACK"* sign with `YRVMEVMRWL HGZMULIW` |
+| 👋 Shutdown | The sign with `SZHGZ OFVTL HGZMOVB` |
+| 🔺 Login | Bill Cipher's reversed whisper from the end of the intro |
+| 🖥️ Terminal | *Caelestia Falls* title, a **cryptogram of the day** (Atbash, Caesar +3 or A1Z26; `decode` shows the solution) and Bill's silhouette |
+| 🖼️ Wallpapers | ~44 from Wallhaven |
 
-Vídeo necesario: la intro oficial *Gravity Falls Opening Theme Song* (~39 s).
+Video needed: the official *Gravity Falls Opening Theme Song* (~39 s).
 
 ### 🎲♟️ Caelestia Zero — *No Game No Life Zero*
 
-| Momento | |
+| Moment | |
 |---|---|
-| 🎬 Arranque | Una mano en la oscuridad → Riku → el cielo rojo de Disboard, con **【 ゲーム開始 】** · *que empiece el juego* |
-| 🔮 Apagado | La cueva de cristales, con **【 ASCHENTE 】** · *lo juro por el pacto* |
-| 🔊 Sonidos | 「ゲームを始めよう」 al entrar y 「アッシェンテ」 al apagar o reiniciar |
-| 🖥️ Terminal | Título *Caelestia Zero*, **los diez pactos de Disboard** (uno por día) y un rey de ajedrez |
-| 🖼️ Wallpapers | Los de Schwi en Wallhaven |
+| 🎬 Boot | A hand in the dark → Riku → Disboard's red sky, with **【 ゲーム開始 】** · *let the game begin* |
+| 🔮 Shutdown | The crystal cave, with **【 ASCHENTE 】** · *I swear by the pledges* |
+| 🔊 Sounds | 「ゲームを始めよう」 on login and 「アッシェンテ」 on shutdown or reboot |
+| 🖥️ Terminal | *Caelestia Zero* title, **the Ten Pledges of Disboard** (one per day) and a chess king |
+| 🖼️ Wallpapers | Schwi wallpapers from Wallhaven |
 
-Vídeo necesario: el PV oficial「映画『ノーゲーム・ノーライフ ゼロ』 PV 第2弾」de KADOKAWAanime (~90 s, 1080p).
+Video needed: the official KADOKAWAanime PV「映画『ノーゲーム・ノーライフ ゼロ』 PV 第2弾」(~90 s, 1080p).
 
-Todo sigue los colores de Caelestia: al cambiar de wallpaper, el logo y la terminal cambian de color.
+Everything follows Caelestia's colours: when you change the wallpaper, the logo and the terminal change colour too.
 
-## Requisitos
+> The on-screen texts and quotes of the current themes are in Spanish.
 
-- Arch Linux con [Caelestia](https://github.com/caelestia-dots/caelestia) (shell + CLI) y la shell `fish`.
-- **Tu propia copia del vídeo** de cada tema. Este repositorio **no incluye** fotogramas, audio ni wallpapers:
-  el instalador los genera en tu equipo a partir del vídeo y descarga los wallpapers al instalar.
-- Para las animaciones: Plymouth con el hook en `mkinitcpio` y `quiet splash` en la línea del kernel (el instalador avisa si falta).
-- Opcional: [`realesrgan-ncnn-vulkan-bin`](https://aur.archlinux.org/packages/realesrgan-ncnn-vulkan-bin) para mejorar la calidad de las animaciones con IA.
+## Requirements
 
-## Instalación
+- Arch Linux with [Caelestia](https://github.com/caelestia-dots/caelestia) (shell + CLI) and the `fish` shell.
+- **Your own copy of each theme's video.** This repository **does not include** frames, audio or wallpapers:
+  the installer generates them on your machine from the video and downloads the wallpapers.
+- For the animations: Plymouth with its `mkinitcpio` hook and `quiet splash` on the kernel command line (the installer warns you if something is missing).
+- Optional: [`realesrgan-ncnn-vulkan-bin`](https://aur.archlinux.org/packages/realesrgan-ncnn-vulkan-bin) to enhance the animations with AI.
+
+## Installation
 
 ```fish
 git clone https://github.com/CMarinBenavides/caelestia-themes
@@ -56,39 +60,41 @@ cd caelestia-themes
 ./install.sh ngnl-zero "~/Downloads/NGNL Zero PV2.mp4"
 ```
 
-Opciones: `--sin-plymouth`, `--sin-wallpapers`, `--sin-activar` y `--reusar` (no vuelve a generar si ya existe).
+Options: `--no-plymouth`, `--no-wallpapers`, `--no-activate` and `--reuse` (skip generation if the assets already exist).
 
-Cambiar de tema regenera la imagen de arranque (pide `sudo`). Para cambiar solo la terminal y los wallpapers: `tema <nombre> --sin-plymouth`.
+Switching themes rebuilds the boot image (asks for `sudo`). To switch only the terminal and wallpapers: `theme <name> --no-plymouth`.
 
-Otros comandos: `descifrar` (solución de la frase cifrada) y `sonido-inicio` (silencia los sonidos, ideal para reuniones).
+Other commands: `decode` (solution of the encoded quote) and `theme-sound` (mute or unmute the theme sounds, handy for meetings).
+Set `CAELESTIA_THEMES_NO_AI=1` to skip Real-ESRGAN, and `CAELESTIA_THEMES_VOLUME` (default `0.2`) for the sound volume.
 
-## Crear un tema nuevo
+## Creating a new theme
 
-Cada tema es una carpeta en `themes/<nombre>/`:
+Each theme is a folder in `themes/<name>/`:
 
-| Archivo | Para qué |
+| File | Purpose |
 |---|---|
-| `tema.conf` | Nombre, emoji, duración esperada del vídeo, FPS, tamaño del logo, modo de las frases, carpeta de wallpapers |
-| `generar.sh` | Recibe el vídeo y una carpeta, y genera `plymouth/boot-*.png` (y `off-*.png` opcional), `mensaje.png`, `mensaje-adios.png`, `logo-mask.png`, `entrada.ogg` y `apagado.ogg` opcional. Puede usar las funciones de `motor/lib.sh` |
-| `banner.txt` | Título de la terminal (ASCII) |
-| `frases.txt` | Una frase por línea; una distinta cada día |
-| `wallpapers.txt` | IDs de [Wallhaven](https://wallhaven.cc) |
+| `theme.conf` | Name, emoji, expected video length, FPS, logo size, quotes mode (`cipher` or `plain`), wallpaper folder |
+| `generate.sh` | Receives the video and a folder, and creates `plymouth/boot-*.png` (and optional `off-*.png`), `message.png`, `message-goodbye.png`, `logo-mask.png`, `login.ogg` and optional `shutdown.ogg`. It can use the helpers in `engine/lib.sh` |
+| `banner.txt` | Terminal title (ASCII art) |
+| `quotes.txt` | One quote per line; a different one each day |
+| `wallpapers.txt` | [Wallhaven](https://wallhaven.cc) IDs |
 
-El motor común (`motor/`) se encarga de Plymouth, del saludo de fish, de los sonidos y de los wallpapers.
+The shared engine (`engine/`) takes care of Plymouth, the fish greeting, the sounds and the wallpapers.
+Code comments are in Spanish.
 
-## Desinstalar
+## Uninstall
 
 ```fish
-./uninstall.sh            # todo
-./uninstall.sh ngnl-zero  # solo un tema
+./uninstall.sh            # everything
+./uninstall.sh ngnl-zero  # a single theme
 ```
 
-## Créditos
+## Credits
 
-- *Gravity Falls* © Disney, creada por Alex Hirsch.
+- *Gravity Falls* © Disney, created by Alex Hirsch.
 - *No Game No Life Zero* © Yuu Kamiya, KADOKAWA / NGNL Zero Production Committee.
-- Proyecto de fans sin relación con los propietarios de las obras; no se distribuye material de las series.
-- Wallpapers: sus autores en [Wallhaven](https://wallhaven.cc), descargados desde allí al instalar.
-- [Caelestia](https://github.com/caelestia-dots) por soramane y colaboradores.
+- Fan project not affiliated with the owners of these works; no material from the series is distributed.
+- Wallpapers: their authors on [Wallhaven](https://wallhaven.cc), downloaded from there during installation.
+- [Caelestia](https://github.com/caelestia-dots) by soramane and contributors.
 
-El código de este repositorio está bajo la licencia MIT.
+The code in this repository is licensed under the MIT license.
