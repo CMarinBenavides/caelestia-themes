@@ -65,6 +65,7 @@ Opciones: `--no-plymouth`, `--no-wallpapers`, `--no-activate` y `--reuse` (no vu
 Cambiar de tema regenera la imagen de arranque (pide `sudo`). Para cambiar solo la terminal y los wallpapers: `theme <nombre> --no-plymouth`.
 
 Otros comandos: `decode` (solución de la frase cifrada) y `theme-sound` (silencia o reactiva los sonidos, ideal para reuniones).
+Para usar tus propios GIF, pon `session.gif` y/o `media.gif` en `~/.config/caelestia-themes/gifs/<tema>/`.
 `CAELESTIA_THEMES_NO_AI=1` evita usar Real-ESRGAN y `CAELESTIA_THEMES_VOLUME` (por defecto `0.2`) ajusta el volumen.
 
 ## Crear un tema nuevo

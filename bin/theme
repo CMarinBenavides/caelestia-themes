@@ -50,12 +50,13 @@ restore_wallpapers() {
 
 # Cambia los GIF de Caelestia (menú de sesión y reproductor del dashboard) por los del tema,
 # guardando los originales la primera vez para poder volver a ellos con "theme default".
-#   set_gifs <tema>    usa session.gif / media.gif del tema (si los tiene)
+#   set_gifs <tema>    usa session.gif / media.gif del tema (si los tiene); los que pongas en
+#                      ~/.config/caelestia-themes/gifs/<tema>/ tienen prioridad (GIF propios)
 #   set_gifs           restaura los originales
 set_gifs() {
-    python3 -I - "$SHELL_JSON" "$CONF/original-gifs.json" "${1:+$SHARE/$1}" <<'PY' && echo "  · Caelestia GIFs updated."
+    python3 -I - "$SHELL_JSON" "$CONF/original-gifs.json" "${1:+$SHARE/$1}" "${1:+$CONF/gifs/$1}" <<'PY' && echo "  · Caelestia GIFs updated."
 import json, os, sys
-shell, saved, theme = sys.argv[1:4]
+shell, saved, theme, custom = sys.argv[1:5]
 keys = {"sessionGif": "session.gif", "mediaGif": "media.gif"}
 cfg = json.load(open(shell))
 paths = cfg.setdefault("paths", {})
@@ -65,7 +66,8 @@ if theme:
         orig = {k: paths.get(k) for k in keys}
         json.dump(orig, open(saved, "w"))
     for k, f in keys.items():
-        paths[k] = os.path.join(theme, f) if os.path.exists(os.path.join(theme, f)) else orig.get(k)
+        found = [os.path.join(d, f) for d in (custom, theme) if os.path.exists(os.path.join(d, f))]
+        paths[k] = found[0] if found else orig.get(k)
 elif orig is not None:
     for k in keys:
         if orig.get(k) is None: paths.pop(k, None)

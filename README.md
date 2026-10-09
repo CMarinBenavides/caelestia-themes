@@ -67,6 +67,7 @@ Options: `--no-plymouth`, `--no-wallpapers`, `--no-activate` and `--reuse` (skip
 Switching themes rebuilds the boot image (asks for `sudo`). To switch only the terminal and wallpapers: `theme <name> --no-plymouth`.
 
 Other commands: `decode` (solution of the encoded quote) and `theme-sound` (mute or unmute the theme sounds, handy for meetings).
+To use your own GIFs, put `session.gif` and/or `media.gif` in `~/.config/caelestia-themes/gifs/<theme>/`.
 Set `CAELESTIA_THEMES_NO_AI=1` to skip Real-ESRGAN, and `CAELESTIA_THEMES_VOLUME` (default `0.2`) for the sound volume.
 
 ## Creating a new theme
