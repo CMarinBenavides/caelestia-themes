@@ -48,6 +48,37 @@ restore_wallpapers() {
     mv "$SHARE/$id/wallpapers" "$wd/$folder"
 }
 
+# Cambia los GIF de Caelestia (menú de sesión y reproductor del dashboard) por los del tema,
+# guardando los originales la primera vez para poder volver a ellos con "theme default".
+#   set_gifs <tema>    usa session.gif / media.gif del tema (si los tiene)
+#   set_gifs           restaura los originales
+set_gifs() {
+    python3 -I - "$SHELL_JSON" "$CONF/original-gifs.json" "${1:+$SHARE/$1}" <<'PY' && echo "  · Caelestia GIFs updated."
+import json, os, sys
+shell, saved, theme = sys.argv[1:4]
+keys = {"sessionGif": "session.gif", "mediaGif": "media.gif"}
+cfg = json.load(open(shell))
+paths = cfg.setdefault("paths", {})
+orig = json.load(open(saved)) if os.path.exists(saved) else None
+if theme:
+    if orig is None:
+        orig = {k: paths.get(k) for k in keys}
+        json.dump(orig, open(saved, "w"))
+    for k, f in keys.items():
+        paths[k] = os.path.join(theme, f) if os.path.exists(os.path.join(theme, f)) else orig.get(k)
+elif orig is not None:
+    for k in keys:
+        if orig.get(k) is None: paths.pop(k, None)
+        else: paths[k] = orig[k]
+    os.remove(saved)
+else:
+    sys.exit(1)
+tmp = shell + ".tmp"
+json.dump(cfg, open(tmp, "w"), indent=2, ensure_ascii=False); open(tmp, "a").write("\n")
+os.replace(tmp, shell)
+PY
+}
+
 list() {
     local a; a=$(active)
     echo "Installed themes:"
@@ -71,6 +102,7 @@ activate() {
     [ -n "$prev" ] && [ "$prev" != "$id" ] && store_wallpapers "$prev"
     mkdir -p "$CONF"; echo "$id" > "$CONF/active"
     restore_wallpapers "$id"
+    set_gifs "$id"
     [ "$opt" = "--no-plymouth" ] || set_plymouth "caelestia-$id"
     local folder wd; folder=$(conf "$id" WALLPAPER_FOLDER); wd=$(wall_dir)
     [ -n "$folder" ] && [ -d "$wd/$folder" ] && caelestia wallpaper -r "$wd/$folder" >/dev/null 2>&1 \
@@ -83,6 +115,7 @@ deactivate() {
     echo "✨ Back to the original Caelestia…"
     [ -n "$prev" ] && store_wallpapers "$prev"
     rm -f "$CONF/active"
+    set_gifs
     [ "$opt" = "--no-plymouth" ] || set_plymouth bgrt
     caelestia wallpaper -r "$(wall_dir)" >/dev/null 2>&1 && echo "  · Default wallpaper applied."
     echo "Done. New terminals will use the original Caelestia greeting."

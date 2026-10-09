@@ -40,3 +40,8 @@ magick -background black -density 96 "$HERE/logo.svg" -colorspace gray "$OUT/log
 cut_audio "$VIDEO" $LOGIN_START $LOGIN_END "$OUT/login.ogg" "loudnorm=I=-20:TP=-2"
 cut_audio "$VIDEO" $SHUTDOWN_START $SHUTDOWN_END "$OUT/shutdown.ogg" "loudnorm=I=-20:TP=-2"
 info "Login and shutdown sounds ready."
+
+# 5. GIFs de Caelestia: Shuvi abriendo los ojos (menú de sesión) y Riku con Shuvi (reproductor)
+make_gif "$VIDEO" 50.75 52.60 0.2 "$OUT/session.gif"
+make_gif "$VIDEO" 57.50 59.90 0.5 "$OUT/media.gif"
+info "Caelestia GIFs ready."

@@ -57,3 +57,8 @@ info "Bill's silhouette ready."
 START=$(python3 -I -c "print(f'{$DUR - 2.9:.2f}')")
 cut_audio "$VIDEO" "$START" "$DUR" "$OUT/login.ogg" "volume=volume=2.8:enable='gte(t,0.3)'"
 info "Login sound ready."
+
+# 5. GIFs de Caelestia: el Tío Stan con gafas (menú de sesión) y la banda en la fogata (reproductor)
+make_gif "$VIDEO" 24.25 25.70 0.15 "$OUT/session.gif"
+make_gif "$VIDEO" 25.75 27.40 0.5 "$OUT/media.gif"
+info "Caelestia GIFs ready."

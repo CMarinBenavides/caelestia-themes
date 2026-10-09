@@ -60,3 +60,13 @@ cut_audio() {
 
 # duration VIDEO → duración en segundos
 duration() { ffprobe -v error -show_entries format=duration -of csv=p=0 "$1"; }
+
+# make_gif VIDEO INICIO FIN POSICIÓN DESTINO
+# GIF cuadrado en bucle para Caelestia (menú de sesión o reproductor del dashboard).
+# POSICIÓN elige el recorte horizontal: 0 = izquierda, 0.5 = centro, 1 = derecha.
+make_gif() {
+    local video=$1 start=$2 end=$3 pos=$4 dst=$5 size=${GIF_SIZE:-400} fps=${GIF_FPS:-15}
+    ffmpeg -v fatal -y -ss "$start" -to "$end" -i "$video" -filter_complex \
+        "crop=ih:ih:(iw-ih)*$pos:0,fps=$fps,scale=$size:$size:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
+        -loop 0 "$dst" </dev/null
+}

@@ -3,7 +3,7 @@
 *[Leer en español](README.es.md)*
 
 Series and movie themes for [Caelestia](https://github.com/caelestia-dots/shell) on Arch Linux + Hyprland.
-Each theme changes the **boot and shutdown animation**, the **sounds**, the **terminal greeting** and the **wallpapers**,
+Each theme changes the **boot and shutdown animation**, the **sounds**, the **terminal greeting**, the **Caelestia GIFs** and the **wallpapers**,
 and a single command switches between themes or back to the original Caelestia.
 
 ```fish
@@ -23,6 +23,7 @@ theme default          # ✨ original Caelestia
 | 👋 Shutdown | The sign with `SZHGZ OFVTL HGZMOVB` |
 | 🔺 Login | Bill Cipher's reversed whisper from the end of the intro |
 | 🖥️ Terminal | *Caelestia Falls* title, a **cryptogram of the day** (Atbash, Caesar +3 or A1Z26; `decode` shows the solution) and Bill's silhouette |
+| 🎞️ GIFs | Grunkle Stan with his sunglasses in the session menu and the campfire band in the dashboard player |
 | 🖼️ Wallpapers | ~44 from Wallhaven |
 
 Video needed: the official *Gravity Falls Opening Theme Song* (~39 s).
@@ -35,6 +36,7 @@ Video needed: the official *Gravity Falls Opening Theme Song* (~39 s).
 | 🔮 Shutdown | The crystal cave, with **【 ASCHENTE 】** · *I swear by the pledges* |
 | 🔊 Sounds | 「ゲームを始めよう」 on login and 「アッシェンテ」 on shutdown or reboot |
 | 🖥️ Terminal | *Caelestia Zero* title, **the Ten Pledges of Disboard** (one per day) and a chess king |
+| 🎞️ GIFs | Schwi opening her eyes in the session menu and Riku with Schwi in the dashboard player |
 | 🖼️ Wallpapers | Schwi wallpapers from Wallhaven |
 
 Video needed: the official KADOKAWAanime PV「映画『ノーゲーム・ノーライフ ゼロ』 PV 第2弾」(~90 s, 1080p).
@@ -74,7 +76,7 @@ Each theme is a folder in `themes/<name>/`:
 | File | Purpose |
 |---|---|
 | `theme.conf` | Name, emoji, expected video length, FPS, logo size, quotes mode (`cipher` or `plain`), wallpaper folder |
-| `generate.sh` | Receives the video and a folder, and creates `plymouth/boot-*.png` (and optional `off-*.png`), `message.png`, `message-goodbye.png`, `logo-mask.png`, `login.ogg` and optional `shutdown.ogg`. It can use the helpers in `engine/lib.sh` |
+| `generate.sh` | Receives the video and a folder, and creates `plymouth/boot-*.png` (and optional `off-*.png`), `message.png`, `message-goodbye.png`, `logo-mask.png`, `login.ogg`, and optionally `shutdown.ogg`, `session.gif` and `media.gif` (the Caelestia session menu and dashboard player GIFs; `make_gif` creates them). It can use the helpers in `engine/lib.sh` |
 | `banner.txt` | Terminal title (ASCII art) |
 | `quotes.txt` | One quote per line; a different one each day |
 | `wallpapers.txt` | [Wallhaven](https://wallhaven.cc) IDs |
