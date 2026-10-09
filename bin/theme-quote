@@ -4,12 +4,15 @@
 #   theme-quote --solve   muestra la solución
 import datetime
 import os
+import random
 import sys
 import unicodedata
 
 HOME = os.path.expanduser("~")
 CONF = os.path.join(os.environ.get("XDG_CONFIG_HOME", f"{HOME}/.config"), "caelestia-themes")
 SHARE = os.path.join(os.environ.get("XDG_DATA_HOME", f"{HOME}/.local/share"), "caelestia-themes")
+# Última frase mostrada (para que "decode" resuelva la que estás viendo aunque sea aleatoria)
+LAST = os.path.join(os.environ.get("XDG_CACHE_HOME", f"{HOME}/.cache"), "caelestia-themes-quote")
 
 
 def read_conf(path):
@@ -55,14 +58,35 @@ def main():
     if not quotes:
         return
     day = datetime.date.today().toordinal()
-    quote = quotes[day % len(quotes)]
+    if "--solve" in sys.argv:
+        # La solución corresponde a la última frase mostrada
+        try:
+            idx, cipher = map(int, open(LAST).read().split())
+        except (OSError, ValueError):
+            idx, cipher = day % len(quotes), day
+    elif conf.get("QUOTES_ROTATION") == "random":
+        # Una frase al azar, distinta de la última que se mostró
+        try:
+            last = int(open(LAST).read().split()[0])
+        except (OSError, ValueError, IndexError):
+            last = -1
+        choices = [i for i in range(len(quotes)) if i != last] or [0]
+        idx, cipher = random.choice(choices), random.randrange(len(CIPHERS))
+    else:
+        idx, cipher = day % len(quotes), day
+    quote = quotes[idx % len(quotes)]
+    if "--solve" not in sys.argv:
+        try:
+            open(LAST, "w").write(f"{idx} {cipher}")
+        except OSError:
+            pass
     color, dim, reset = "\x1b[38;5;17m", "\x1b[2m", "\x1b[0m"
     emoji = conf.get("EMOJI", "✨")[:1]
     hint = conf.get("QUOTE_HINT", "")
 
     if conf.get("QUOTES_MODE") == "cipher":
         quote = clean(quote)
-        name, encode = CIPHERS[day % len(CIPHERS)]
+        name, encode = CIPHERS[cipher % len(CIPHERS)]
         if "--solve" in sys.argv:
             print(f"🔓 {quote}")
         else:
