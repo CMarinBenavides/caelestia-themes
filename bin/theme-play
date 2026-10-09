@@ -12,13 +12,22 @@ EVENT=${1:-login}
 # así que el sonido no puede esperar a que se detenga el servicio. En su lugar se pide a logind un
 # "inhibidor de retraso": logind avisa (PrepareForShutdown) y espera hasta 5 s mientras suena.
 if [ "$EVENT" = watch ]; then
-    systemd-inhibit --what=shutdown --mode=delay --who="Caelestia Themes" --why="Shutdown sound" sleep infinity &
+    systemd-inhibit --what=shutdown --mode=delay --who="Caelestia Themes" --why="Shutdown sound" sleep infinity 2>/dev/null &
     INHIBIT=$!
     trap 'pkill -P $INHIBIT 2>/dev/null; kill $INHIBIT 2>/dev/null' EXIT
-    gdbus monitor --system --dest org.freedesktop.login1 --object-path /org/freedesktop/login1 |
-    while read -r line; do
-        case $line in *PrepareForShutdown*true*) "$0" shutdown; break ;; esac
-    done
+    # Espera la señal PrepareForShutdown(true) de logind (bus y emisor configurables para pruebas)
+    python3 -I - "${WATCH_BUS:-system}" "${WATCH_SENDER-org.freedesktop.login1}" <<'PY' || exit 1
+import sys
+from gi.repository import Gio, GLib
+bus = Gio.bus_get_sync(Gio.BusType.SYSTEM if sys.argv[1] == "system" else Gio.BusType.SESSION)
+loop = GLib.MainLoop()
+def on_signal(conn, sender, path, iface, name, params):
+    if params.unpack()[0]: loop.quit()
+bus.signal_subscribe(sys.argv[2] or None, "org.freedesktop.login1.Manager", "PrepareForShutdown",
+                     "/org/freedesktop/login1", None, Gio.DBusSignalFlags.NONE, on_signal)
+loop.run()
+PY
+    "$0" shutdown
     exit 0
 fi
 
