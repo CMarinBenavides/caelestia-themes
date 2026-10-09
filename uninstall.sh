@@ -1,5 +1,5 @@
 #!/bin/bash
-# Caelestia Temas — desinstalador
+# Caelestia Themes — desinstalador
 #   ./uninstall.sh            quita todos los temas y vuelve a Caelestia original
 #   ./uninstall.sh <tema>     quita solo ese tema
 set -uo pipefail
@@ -43,4 +43,4 @@ rm -f ~/.config/systemd/user/tema-apagado.service
 rm -f "$BIN"/{tema,tema-frase,tema-logo,tema-sonido}
 rm -f "${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch/caelestia-temas.jsonc" ~/.cache/fastfetch-tema-logo.ansi*
 rm -rf "$CONF"
-echo "Caelestia Temas desinstalado. Hasta luego. 👋"
+echo "Caelestia Themes desinstalado. Hasta luego. 👋"

@@ -1,8 +1,8 @@
 #!/bin/bash
-# Caelestia Temas — instalador
+# Caelestia Themes — instalador
 # Uso: ./install.sh <tema> "/ruta/al/video.mp4" [--sin-plymouth] [--sin-wallpapers] [--sin-activar] [--reusar]
 #   --reusar: no vuelve a generar los recursos si ya existen (p. ej. generados antes con "seguro")
-#   Temas: gravity-falls, ngnl-zero  (ver la carpeta temas/)
+#   Temas: gravity-falls, ngnl-zero  (ver la carpeta themes/)
 #
 # Los recursos (animación, logo y sonidos) se generan en tu equipo a partir de TU copia del vídeo.
 # Este repositorio no incluye material con derechos de autor.
@@ -32,9 +32,9 @@ done
 say() { printf '\n\e[1;38;5;16m==>\e[0m %s\n' "$*"; }
 source "$REPO/motor/lib.sh"
 
-[ -n "$TEMA" ] || { echo "Temas disponibles:"; ls "$REPO/temas"; echo; sed -n '3p' "$0"; exit 1; }
-TDIR="$REPO/temas/$TEMA"
-[ -f "$TDIR/tema.conf" ] || die "No existe el tema '$TEMA'. Disponibles: $(ls "$REPO/temas" | tr '\n' ' ')"
+[ -n "$TEMA" ] || { echo "Temas disponibles:"; ls "$REPO/themes"; echo; sed -n '3p' "$0"; exit 1; }
+TDIR="$REPO/themes/$TEMA"
+[ -f "$TDIR/tema.conf" ] || die "No existe el tema '$TEMA'. Disponibles: $(ls "$REPO/themes" | tr '\n' ' ')"
 # shellcheck source=/dev/null
 source "$TDIR/tema.conf"
 DEST="$SHARE/$TEMA"

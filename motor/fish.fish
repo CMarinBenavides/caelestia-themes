@@ -1,4 +1,4 @@
-# Caelestia Temas: saludo de la terminal y comandos del tema activo.
+# Caelestia Themes: saludo de la terminal y comandos del tema activo.
 # Se carga desde ~/.config/caelestia/user-config.fish
 
 set -l ct_conf (set -q XDG_CONFIG_HOME; and echo $XDG_CONFIG_HOME; or echo $HOME/.config)/caelestia-temas

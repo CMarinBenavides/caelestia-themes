@@ -1,4 +1,4 @@
-# Caelestia Temas — animación de Plymouth (común a todos los temas).
+# Caelestia Themes — animación de Plymouth (común a todos los temas).
 # install.sh sustituye los valores @...@ según el tema.
 #   Al encender: boot-0..N.png y luego "mensaje.png" desde el fotograma MSG_FRAME.
 #   Al apagar/reiniciar: off-0..M.png si existen; si no, el último fotograma del arranque fijo.
