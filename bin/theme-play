@@ -1,11 +1,26 @@
 #!/bin/bash
 # theme-play: reproduce el sonido del tema activo.
 #   theme-play login      al iniciar sesión (lo llama Hyprland)
-#   theme-play shutdown   al apagar o reiniciar (lo llama el servicio theme-shutdown)
+#   theme-play shutdown   al apagar o reiniciar
+#   theme-play watch      espera el apagado y reproduce "shutdown" (lo usa el servicio theme-shutdown)
 CONF=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-themes
 SHARE=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-themes
 VOLUME=${CAELESTIA_THEMES_VOLUME:-0.2}
 EVENT=${1:-login}
+
+# Al apagar, la sesión se cierra antes que el servicio de audio y WirePlumber retira los altavoces,
+# así que el sonido no puede esperar a que se detenga el servicio. En su lugar se pide a logind un
+# "inhibidor de retraso": logind avisa (PrepareForShutdown) y espera hasta 5 s mientras suena.
+if [ "$EVENT" = watch ]; then
+    systemd-inhibit --what=shutdown --mode=delay --who="Caelestia Themes" --why="Shutdown sound" sleep infinity &
+    INHIBIT=$!
+    trap 'pkill -P $INHIBIT 2>/dev/null; kill $INHIBIT 2>/dev/null' EXIT
+    gdbus monitor --system --dest org.freedesktop.login1 --object-path /org/freedesktop/login1 |
+    while read -r line; do
+        case $line in *PrepareForShutdown*true*) "$0" shutdown; break ;; esac
+    done
+    exit 0
+fi
 
 ID=$(cat "$CONF/active" 2>/dev/null) || exit 0
 [ -n "$ID" ] || exit 0
