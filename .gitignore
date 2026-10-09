@@ -9,3 +9,5 @@
 *.gif
 frames/
 wallpapers/
+__pycache__/
+*.pyc
