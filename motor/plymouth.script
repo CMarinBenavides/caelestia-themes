@@ -1,0 +1,88 @@
+# Caelestia Temas — animación de Plymouth (común a todos los temas).
+# install.sh sustituye los valores @...@ según el tema.
+#   Al encender: boot-0..N.png y luego "mensaje.png" desde el fotograma MSG_FRAME.
+#   Al apagar/reiniciar: off-0..M.png si existen; si no, el último fotograma del arranque fijo.
+#   El mensaje "mensaje-adios.png" aparece desde el principio del apagado.
+
+Window.SetBackgroundTopColor(0, 0, 0);
+Window.SetBackgroundBottomColor(0, 0, 0);
+
+sw = Window.GetWidth();
+sh = Window.GetHeight();
+
+BOOT_FRAMES = @BOOT_FRAMES@;
+OFF_FRAMES = @OFF_FRAMES@;
+FPS = @FPS@;
+MSG_FRAME = @MSG_FRAME@;
+REFRESH_HZ = 50;
+
+mode = Plymouth.GetMode();
+apagando = (mode == "shutdown" || mode == "reboot");
+
+fun load_frame(name) {
+    img = Image(name);
+    if (img.GetWidth() != sw || img.GetHeight() != sh)
+        img = img.Scale(sw, sh);
+    return img;
+}
+
+fun load_message(file) {
+    img = Image(file);
+    scale = sw / 1920;
+    if (scale != 1)
+        img = img.Scale(img.GetWidth() * scale, img.GetHeight() * scale);
+    return img;
+}
+
+if (apagando) {
+    if (OFF_FRAMES > 0) {
+        for (i = 0; i < OFF_FRAMES; i++)
+            frames[i] = load_frame("off-" + i + ".png");
+        total = OFF_FRAMES;
+    } else {
+        frames[0] = load_frame("boot-" + (BOOT_FRAMES - 1) + ".png");
+        total = 1;
+    }
+    msg_img = load_message("mensaje-adios.png");
+    msg_from = 0;
+} else {
+    for (i = 0; i < BOOT_FRAMES; i++)
+        frames[i] = load_frame("boot-" + i + ".png");
+    total = BOOT_FRAMES;
+    msg_img = load_message("mensaje.png");
+    msg_from = MSG_FRAME;
+}
+
+anim = Sprite(frames[0]);
+anim.SetPosition(0, 0, 0);
+
+msg = Sprite(msg_img);
+msg.SetPosition(sw / 2 - msg_img.GetWidth() / 2, sh - msg_img.GetHeight() - sh * 0.02, 10);
+msg.SetOpacity(0);
+
+ticks = 0;
+msg_tick = Math.Int(msg_from * REFRESH_HZ / FPS);
+
+fun refresh_callback() {
+    ticks++;
+    idx = Math.Int(ticks * FPS / REFRESH_HZ);
+    if (idx >= total)
+        idx = total - 1;
+    # El mensaje aparece en 0,2 s
+    if (idx >= msg_from) {
+        op = (ticks - msg_tick) / (REFRESH_HZ / 5);
+        if (op > 1) op = 1;
+        msg.SetOpacity(op);
+    }
+    anim.SetImage(frames[idx]);
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);
+
+# Mensajes del sistema (por ejemplo, errores de disco): se muestran arriba
+status = Sprite();
+status.SetPosition(20, 20, 20);
+fun message_callback(text) {
+    status.SetImage(Image.Text(text, 1, 1, 1));
+}
+Plymouth.SetMessageFunction(message_callback);

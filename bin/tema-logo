@@ -1,11 +1,15 @@
 #!/bin/bash
-# Genera el logo de Bill Cipher para fastfetch (arte de bloques con color real),
-# pintado con el color principal del esquema de Caelestia. Solo se regenera si cambió el esquema.
-MASK=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-falls/bill-mask.png
-OUT=~/.cache/fastfetch-bill.ansi
+# tema-logo: genera el logo del tema activo para fastfetch (arte de bloques con color real),
+# pintado con el color principal del esquema de Caelestia. Solo se regenera si algo cambió.
+CONF=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-temas
+SHARE=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-temas
+TEMA=$(cat "$CONF/activo" 2>/dev/null) || exit 0
+MASK=$SHARE/$TEMA/logo-mask.png
+[ -f "$MASK" ] || exit 0
+OUT=~/.cache/fastfetch-tema-logo.ansi
 SCHEME=${XDG_STATE_HOME:-$HOME/.local/state}/caelestia/scheme.json
-COLS=${1:-18}
-[ -f "$OUT" ] && [ "$OUT" -nt "$SCHEME" ] && [ "$OUT" -nt "$MASK" ] && [ "$OUT" -nt "$0" ] && exit 0
+COLS=${1:-$(grep -Po '^LOGO_COLUMNAS=\K[0-9]+' "$SHARE/$TEMA/tema.conf" 2>/dev/null || echo 18)}
+[ -f "$OUT" ] && [ "$(cat "$OUT.tema" 2>/dev/null)" = "$TEMA:$COLS" ] && [ "$OUT" -nt "$SCHEME" ] && [ "$OUT" -nt "$MASK" ] && [ "$OUT" -nt "$0" ] && exit 0
 mkdir -p ~/.cache
 python3 -I - "$MASK" "$SCHEME" "$OUT" "$COLS" <<'PY'
 import json, re, subprocess, sys
@@ -41,3 +45,4 @@ for r in range(rows):
     lines.append(s)
 open(out, "w").write("\n".join(lines) + "\n")
 PY
+echo "$TEMA:$COLS" > "$OUT.tema"

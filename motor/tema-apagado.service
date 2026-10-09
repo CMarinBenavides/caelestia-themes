@@ -1,0 +1,15 @@
+[Unit]
+Description=Sonido del tema de Caelestia al apagar o reiniciar
+# Al apagar, systemd detiene las unidades en orden inverso: este sonido suena antes de que se cierre el audio
+After=pipewire.service pipewire-pulse.service wireplumber.service
+Wants=pipewire.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=%h/.local/bin/tema-sonido apagado
+TimeoutStopSec=5
+
+[Install]
+WantedBy=default.target

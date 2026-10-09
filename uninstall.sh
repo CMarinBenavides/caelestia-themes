@@ -1,32 +1,46 @@
 #!/bin/bash
-# Caelestia Falls — desinstalador: vuelve a Caelestia original y borra todo lo instalado.
+# Caelestia Temas — desinstalador
+#   ./uninstall.sh            quita todos los temas y vuelve a Caelestia original
+#   ./uninstall.sh <tema>     quita solo ese tema
 set -uo pipefail
-CONF=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-falls
-SHARE=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-falls
+CONF=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-temas
+SHARE=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-temas
 BIN=$HOME/.local/bin
 CAEL=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia
+TEMA=${1:-}
 
-read -rp "¿Borrar también los wallpapers de Gravity Falls? [s/N] " del_walls
+read -rp "¿Borrar también los wallpapers descargados? [s/N] " del_walls
 
-[ -x "$BIN/tema" ] && "$BIN/tema" normal
+quitar_tema() {
+    local id=$1
+    [ "$(cat "$CONF/activo" 2>/dev/null)" = "$id" ] && "$BIN/tema" normal
+    if [[ ${del_walls,,} == s* ]]; then
+        rm -rf "${SHARE:?}/$id"
+    else
+        find "$SHARE/$id" -mindepth 1 -maxdepth 1 ! -name wallpapers -exec rm -rf {} + 2>/dev/null
+        [ -d "$SHARE/$id/wallpapers" ] && echo "Los wallpapers de $id siguen en $SHARE/$id/wallpapers"
+    fi
+    if [ -d "/usr/share/plymouth/themes/caelestia-$id" ]; then
+        echo "Quitando la animación de arranque de $id (pide sudo)…"
+        sudo rm -rf "/usr/share/plymouth/themes/caelestia-$id"
+    fi
+}
+
+if [ -n "$TEMA" ]; then
+    quitar_tema "$TEMA"
+    echo "Tema $TEMA desinstalado."
+    exit 0
+fi
+
+for d in "$SHARE"/*/; do [ -d "$d" ] && quitar_tema "$(basename "$d")"; done
 
 # Quitar los bloques añadidos a la configuración de Caelestia
 for f in "$CAEL/user-config.fish" "$CAEL/hypr-user.lua"; do
-    [ -f "$f" ] && sed -i '/caelestia-falls >>>/,/caelestia-falls <<</d' "$f"
+    [ -f "$f" ] && sed -i '/caelestia-temas >>>/,/caelestia-temas <<</d' "$f"
 done
-
-rm -f "$BIN"/{tema,criptograma,bill-logo,caelestia-falls-sonido}
-rm -f "${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch/gravity-falls.jsonc" ~/.cache/fastfetch-bill.ansi
+systemctl --user disable --now tema-apagado.service 2>/dev/null
+rm -f ~/.config/systemd/user/tema-apagado.service
+rm -f "$BIN"/{tema,tema-frase,tema-logo,tema-sonido}
+rm -f "${XDG_CONFIG_HOME:-$HOME/.config}/fastfetch/caelestia-temas.jsonc" ~/.cache/fastfetch-tema-logo.ansi*
 rm -rf "$CONF"
-if [[ ${del_walls,,} == s* ]]; then
-    rm -rf "$SHARE"
-else
-    find "$SHARE" -mindepth 1 -maxdepth 1 ! -name wallpapers -exec rm -rf {} +
-    echo "Los wallpapers siguen en $SHARE/wallpapers"
-fi
-
-if [ -d /usr/share/plymouth/themes/gravity-falls ]; then
-    echo "Quitando el tema de Plymouth (pide sudo)…"
-    sudo rm -rf /usr/share/plymouth/themes/gravity-falls
-fi
-echo "Caelestia Falls desinstalado. Hasta luego, Stanley. 👋"
+echo "Caelestia Temas desinstalado. Hasta luego. 👋"

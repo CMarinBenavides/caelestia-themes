@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="400" height="520">
+  <g fill="#ffffff">
+    <!-- cruz -->
+    <rect x="92" y="4" width="16" height="44" rx="3"/>
+    <rect x="76" y="16" width="48" height="15" rx="3"/>
+    <!-- corona -->
+    <path d="M58 70 Q100 40 142 70 L136 92 Q100 82 64 92 Z"/>
+    <!-- cuello -->
+    <rect x="66" y="96" width="68" height="12" rx="5"/>
+    <!-- cuerpo -->
+    <path d="M72 112 L128 112 Q122 160 140 196 L60 196 Q78 160 72 112 Z"/>
+    <!-- anillo -->
+    <rect x="50" y="200" width="100" height="14" rx="6"/>
+    <!-- base -->
+    <path d="M36 220 L164 220 Q170 222 170 230 L170 244 Q170 252 162 252 L38 252 Q30 252 30 244 L30 230 Q30 222 36 220 Z"/>
+  </g>
+</svg>

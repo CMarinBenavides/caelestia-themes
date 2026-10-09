@@ -1,0 +1,17 @@
+#!/bin/bash
+# tema-sonido: reproduce el sonido del tema activo.
+#   tema-sonido entrada   al iniciar sesión (lo llama Hyprland)
+#   tema-sonido apagado   al apagar o reiniciar (lo llama el servicio tema-apagado)
+CONF=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-temas
+SHARE=${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-temas
+VOLUME=${CAELESTIA_TEMAS_VOLUME:-0.2}
+EVENT=${1:-entrada}
+
+ID=$(cat "$CONF/activo" 2>/dev/null) || exit 0
+[ -n "$ID" ] || exit 0
+[ -e "$CONF/sin-sonido" ] && exit 0
+SOUND="$SHARE/$ID/$EVENT.ogg"
+[ -f "$SOUND" ] || exit 0
+
+[ "$EVENT" = entrada ] && sleep 2
+exec pw-play --volume="$VOLUME" "$SOUND"
