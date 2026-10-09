@@ -153,7 +153,7 @@ add_block "$CAEL/hypr-user.lua" "--" \
 
 install -m 644 "$REPO/engine/theme-shutdown.service" ~/.config/systemd/user/
 systemctl --user daemon-reload
-systemctl --user enable --now theme-shutdown.service >/dev/null 2>&1 || true
+systemctl --user enable theme-shutdown.service >/dev/null 2>&1 && systemctl --user restart theme-shutdown.service || true
 
 # fastfetch: copia de tu configuración con el logo del tema
 python3 -I - "$FF/config.jsonc" "$FF/caelestia-themes.jsonc" <<'PY'
