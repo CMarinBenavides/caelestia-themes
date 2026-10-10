@@ -126,7 +126,8 @@ fi
 [ -f "$TDIR/silhouette.png" ] && cp "$TDIR/silhouette.png" "$DEST/" \
     || make_silhouette "$DEST/logo-mask.png" "$DEST/silhouette.png"
 cp "$TDIR/theme.conf" "$DEST/"
-for f in banner.txt quotes.txt; do [ -f "$TDIR/$f" ] && cp "$TDIR/$f" "$DEST/"; done
+rm -f "$DEST"/quotes.*.txt
+for f in "$TDIR"/banner.txt "$TDIR"/quotes*.txt; do [ -f "$f" ] && cp "$f" "$DEST/"; done
 
 # Plymouth: script común con los valores del tema
 BOOT_FRAMES=$(cat "$DEST/boot_frames"); OFF_FRAMES=$(cat "$DEST/off_frames" 2>/dev/null || echo 0)

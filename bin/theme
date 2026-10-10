@@ -4,6 +4,7 @@
 #   theme <name> [--no-plymouth]      activate a theme (e.g. gravity-falls, ngnl-zero)
 #   theme default [--no-plymouth]     back to the original Caelestia
 #   theme status                      show the active theme
+#   theme lang [en|ja|…|auto|original] language of the theme quotes (default: original)
 set -uo pipefail
 
 CONF=${XDG_CONFIG_HOME:-$HOME/.config}/caelestia-themes
@@ -97,6 +98,24 @@ status() {
     if [ -n "$a" ]; then echo "$(conf "$a" EMOJI) Active theme: $(conf "$a" NAME) ($a)"; else echo "✨ Active theme: original Caelestia"; fi
     echo "  Plymouth: $(plymouth_theme)"
     [ -e "$CONF/muted" ] && echo "  Sounds:   muted" || echo "  Sounds:   on"
+    echo "  Quotes:   $(cat "$CONF/lang" 2>/dev/null || echo original)"
+}
+
+# Idioma de las frases. Sin argumento muestra el actual y los que trae cada tema.
+lang() {
+    local want=${1:-}
+    if [ -z "$want" ]; then
+        echo "Quotes language: $(cat "$CONF/lang" 2>/dev/null || echo original)"
+        for id in $(installed); do
+            local langs; langs=$(ls "$SHARE/$id"/quotes.*.txt 2>/dev/null | sed -E 's/.*quotes\.(.*)\.txt/\1/' | tr '\n' ' ')
+            echo "  $(conf "$id" EMOJI) $id: original${langs:+ · $langs}"
+        done
+        return
+    fi
+    [[ $want =~ ^([a-z]{2}|auto|original)$ ]] || { echo "Use a two-letter code (es, en, ja…), auto or original."; exit 1; }
+    mkdir -p "$CONF"
+    if [ "$want" = original ]; then rm -f "$CONF/lang"; else echo "$want" > "$CONF/lang"; fi
+    echo "Quotes language: $want. Themes without quotes in that language use their original ones."
 }
 
 activate() {
@@ -129,6 +148,7 @@ case "${1:-status}" in
     status) status ;;
     list|ls) list ;;
     default|original|normal) deactivate "${2:-}" ;;
-    -h|--help|help) sed -n '2,7p' "$0" ;;
+    lang|language) lang "${2:-}" ;;
+    -h|--help|help) sed -n '2,8p' "$0" ;;
     *) activate "$1" "${2:-}" ;;
 esac

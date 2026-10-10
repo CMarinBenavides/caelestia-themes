@@ -26,6 +26,29 @@ def read_conf(path):
     return conf
 
 
+def language():
+    # Idioma de las frases: variable CAELESTIA_THEMES_LANG > "theme lang" > el original de cada tema.
+    # "auto" usa el idioma del sistema; "original" (o nada) las frases tal como vienen en el tema.
+    lang = os.environ.get("CAELESTIA_THEMES_LANG", "")
+    if not lang:
+        try:
+            lang = open(os.path.join(CONF, "lang")).read().strip()
+        except OSError:
+            lang = "original"
+    if lang == "original":
+        return ""
+    if lang == "auto":
+        lang = os.environ.get("LANG", "")
+    return lang.split("_")[0].split(".")[0].lower()
+
+
+def quotes_file(theme):
+    # quotes.<idioma>.txt si el tema lo trae; si no, quotes.txt (el idioma original del tema)
+    lang = language()
+    path = os.path.join(SHARE, theme, f"quotes.{lang}.txt")
+    return path if lang and os.path.exists(path) else os.path.join(SHARE, theme, "quotes.txt")
+
+
 def clean(text):
     # Quita tildes (la Ñ pasa a N) para cifrar solo A-Z
     t = unicodedata.normalize("NFD", text)
@@ -52,7 +75,7 @@ def main():
     try:
         theme = open(os.path.join(CONF, "active")).read().strip()
         conf = read_conf(os.path.join(SHARE, theme, "theme.conf"))
-        quotes = [l.strip() for l in open(os.path.join(SHARE, theme, "quotes.txt"), encoding="utf-8") if l.strip()]
+        quotes = [l.strip() for l in open(quotes_file(theme), encoding="utf-8") if l.strip()]
     except (OSError, ValueError):
         return
     if not quotes:

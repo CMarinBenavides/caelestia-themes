@@ -45,6 +45,8 @@ Vídeo necesario: el PV oficial「映画『ノーゲーム・ノーライフ ゼ
 
 Todo sigue los colores de Caelestia: al cambiar de wallpaper, el logo y la terminal cambian de color.
 
+> Las frases vienen en español y también en inglés (y en japonés para NGNL Zero): `theme lang en`, `theme lang ja`, `theme lang auto` (idioma del sistema) o `theme lang original`.
+
 ## Requisitos
 
 - Arch Linux con [Caelestia](https://github.com/caelestia-dots/caelestia) (shell + CLI) y la shell `fish`.
@@ -79,6 +81,7 @@ Cada tema es una carpeta en `themes/<nombre>/`:
 | `theme.conf` | Nombre, emoji, duración esperada del vídeo, FPS, tamaño del logo, modo de las frases (`cipher` o `plain`), carpeta de wallpapers |
 | `generate.sh` | Recibe el vídeo y una carpeta, y genera `plymouth/boot-*.png` (y `off-*.png` opcional), `message.png`, `message-goodbye.png`, `logo-mask.png`, `login.ogg`, y opcionalmente `silhouette.png` (pantalla de bloqueo; si falta se crea desde `logo-mask.png`), `shutdown.ogg`, `session.gif` y `media.gif` (los GIF del menú de sesión y del reproductor de Caelestia; los crea `make_gif`). Puede usar las funciones de `engine/lib.sh` |
 | `banner.txt` | Título de la terminal (ASCII) |
+| `quotes.<idioma>.txt` | Traducciones opcionales, línea por línea (p. ej. `quotes.en.txt`); se usan con `theme lang <idioma>` |
 | `quotes.txt` | Una frase por línea; una distinta cada día |
 | `wallpapers.txt` | IDs de [Wallhaven](https://wallhaven.cc) |
 

@@ -45,7 +45,7 @@ Video needed: the official KADOKAWAanime PV「映画『ノーゲーム・ノー�
 
 Everything follows Caelestia's colours: when you change the wallpaper, the logo and the terminal change colour too.
 
-> The on-screen texts and quotes of the current themes are in Spanish.
+> The on-screen texts of the current themes are in Spanish. The quotes are in Spanish by default and also come in English (and Japanese for NGNL Zero): `theme lang en`, `theme lang ja`, `theme lang auto` (system language) or `theme lang original`.
 
 ## Requirements
 
@@ -81,7 +81,8 @@ Each theme is a folder in `themes/<name>/`:
 | `theme.conf` | Name, emoji, expected video length, FPS, logo size, quotes mode (`cipher` or `plain`), wallpaper folder |
 | `generate.sh` | Receives the video and a folder, and creates `plymouth/boot-*.png` (and optional `off-*.png`), `message.png`, `message-goodbye.png`, `logo-mask.png`, `login.ogg`, and optionally `silhouette.png` (lock screen; made from `logo-mask.png` if missing), `shutdown.ogg`, `session.gif` and `media.gif` (the Caelestia session menu and dashboard player GIFs; `make_gif` creates them). It can use the helpers in `engine/lib.sh` |
 | `banner.txt` | Terminal title (ASCII art) |
-| `quotes.txt` | One quote per line; a different one each day |
+| `quotes.txt` | One quote per line, in the theme's original language (daily or random, see `QUOTES_ROTATION`) |
+| `quotes.<lang>.txt` | Optional translations, line by line (e.g. `quotes.en.txt`); used with `theme lang <lang>` |
 | `wallpapers.txt` | [Wallhaven](https://wallhaven.cc) IDs |
 
 The shared engine (`engine/`) takes care of Plymouth, the fish greeting, the sounds and the wallpapers.
