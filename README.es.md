@@ -39,7 +39,7 @@ Vídeo necesario: la intro oficial *Gravity Falls Opening Theme Song* (~39 s).
 | 🖥️ Terminal | Título *Caelestia Zero*, **los diez pactos de Disboard** (uno por día) y un rey de ajedrez |
 | 🎞️ GIFs | Schwi abriendo los ojos en el menú de sesión y Riku con Schwi en el reproductor del dashboard |
 | 🔒 Bloqueo | El rey de ajedrez en lugar del dinosaurio (también en el panel de notificaciones vacío) |
-| 🖼️ Wallpapers | Los de Schwi en Wallhaven |
+| 🖼️ Wallpapers | ~59 de Wallhaven: Schwi, Riku, Sora, Shiro, Jibril, Stephanie, Izuna… |
 
 Vídeo necesario: el PV oficial「映画『ノーゲーム・ノーライフ ゼロ』 PV 第2弾」de KADOKAWAanime (~90 s, 1080p).
 

@@ -39,7 +39,7 @@ Video needed: the official *Gravity Falls Opening Theme Song* (~39 s).
 | 🖥️ Terminal | *Caelestia Zero* title, **the Ten Pledges of Disboard** (one per day) and a chess king |
 | 🎞️ GIFs | Schwi opening her eyes in the session menu and Riku with Schwi in the dashboard player |
 | 🔒 Lock screen | The chess king instead of the dinosaur (also in the empty notifications panel) |
-| 🖼️ Wallpapers | Schwi wallpapers from Wallhaven |
+| 🖼️ Wallpapers | ~59 from Wallhaven: Schwi, Riku, Sora, Shiro, Jibril, Stephanie, Izuna… |
 
 Video needed: the official KADOKAWAanime PV「映画『ノーゲーム・ノーライフ ゼロ』 PV 第2弾」(~90 s, 1080p).
 
