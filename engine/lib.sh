@@ -70,3 +70,13 @@ make_gif() {
         "crop=ih:ih:(iw-ih)*$pos:0,fps=$fps,scale=$size:$size:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
         -loop 0 "$dst" </dev/null
 }
+
+# make_silhouette MÁSCARA DESTINO
+# Convierte la máscara del logo (blanco sobre negro) en una silueta con transparencia para la
+# pantalla de bloqueo y el panel de notificaciones vacío. Caelestia la tiñe con el color del esquema.
+# Se centra en un lienzo con la proporción del dinosaurio original (≈ 2,3:1) para que ocupe lo mismo.
+make_silhouette() {
+    magick "$1" -alpha off -colorspace gray \( +clone -fill white -colorize 100 \) +swap \
+        -compose CopyOpacity -composite -trim +repage \
+        -background none -gravity center -extent '%[fx:max(w,h*2.3)]x%[fx:h]' PNG32:"$2"
+}

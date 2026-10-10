@@ -122,6 +122,9 @@ else
     rm -rf "$DEST/plymouth"
     bash "$TDIR/generate.sh" "$VIDEO" "$DEST"
 fi
+# Silueta para la pantalla de bloqueo (si el tema no trae una propia)
+[ -f "$TDIR/silhouette.png" ] && cp "$TDIR/silhouette.png" "$DEST/" \
+    || make_silhouette "$DEST/logo-mask.png" "$DEST/silhouette.png"
 cp "$TDIR/theme.conf" "$DEST/"
 for f in banner.txt quotes.txt; do [ -f "$TDIR/$f" ] && cp "$TDIR/$f" "$DEST/"; done
 

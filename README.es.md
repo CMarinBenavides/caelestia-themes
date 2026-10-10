@@ -3,7 +3,7 @@
 *[Read in English](README.md)*
 
 Temas de series y películas para [Caelestia](https://github.com/caelestia-dots/shell) en Arch Linux + Hyprland.
-Cada tema cambia la **animación de arranque y apagado**, los **sonidos**, el **saludo de la terminal**, los **GIF de Caelestia** y los **wallpapers**,
+Cada tema cambia la **animación de arranque y apagado**, los **sonidos**, el **saludo de la terminal**, los **GIF de Caelestia**, la **imagen de la pantalla de bloqueo** y los **wallpapers**,
 y con un solo comando cambias entre temas o vuelves a Caelestia original.
 
 ```fish
@@ -24,6 +24,7 @@ theme default          # ✨ Caelestia original
 | 🔺 Al iniciar sesión | El susurro invertido de Bill Cipher del final de la intro |
 | 🖥️ Terminal | Título *Caelestia Falls*, un **criptograma del día** (Atbash, César +3 o A1Z26; `decode` para la solución) y la silueta de Bill |
 | 🎞️ GIFs | El Tío Stan con sus gafas en el menú de sesión y la banda en la fogata en el reproductor del dashboard |
+| 🔒 Bloqueo | La silueta de Bill en lugar del dinosaurio (también en el panel de notificaciones vacío) |
 | 🖼️ Wallpapers | ~44 de Wallhaven |
 
 Vídeo necesario: la intro oficial *Gravity Falls Opening Theme Song* (~39 s).
@@ -37,6 +38,7 @@ Vídeo necesario: la intro oficial *Gravity Falls Opening Theme Song* (~39 s).
 | 🔊 Sonidos | 「ゲームを始めよう」 al entrar y 「アッシェンテ」 al apagar o reiniciar |
 | 🖥️ Terminal | Título *Caelestia Zero*, **los diez pactos de Disboard** (uno por día) y un rey de ajedrez |
 | 🎞️ GIFs | Schwi abriendo los ojos en el menú de sesión y Riku con Schwi en el reproductor del dashboard |
+| 🔒 Bloqueo | El rey de ajedrez en lugar del dinosaurio (también en el panel de notificaciones vacío) |
 | 🖼️ Wallpapers | Los de Schwi en Wallhaven |
 
 Vídeo necesario: el PV oficial「映画『ノーゲーム・ノーライフ ゼロ』 PV 第2弾」de KADOKAWAanime (~90 s, 1080p).
@@ -65,7 +67,7 @@ Opciones: `--no-plymouth`, `--no-wallpapers`, `--no-activate` y `--reuse` (no vu
 Cambiar de tema regenera la imagen de arranque (pide `sudo`). Para cambiar solo la terminal y los wallpapers: `theme <nombre> --no-plymouth`.
 
 Otros comandos: `decode` (solución de la frase cifrada) y `theme-sound` (silencia o reactiva los sonidos, ideal para reuniones).
-Para usar tus propios GIF, pon `session.gif` y/o `media.gif` en `~/.config/caelestia-themes/gifs/<tema>/`.
+Para usar tus propios GIF, pon `session.gif`, `media.gif` y/o `silhouette.png` en `~/.config/caelestia-themes/gifs/<tema>/`.
 `CAELESTIA_THEMES_NO_AI=1` evita usar Real-ESRGAN y `CAELESTIA_THEMES_VOLUME` (por defecto `0.2`) ajusta el volumen.
 
 ## Crear un tema nuevo
@@ -75,7 +77,7 @@ Cada tema es una carpeta en `themes/<nombre>/`:
 | Archivo | Para qué |
 |---|---|
 | `theme.conf` | Nombre, emoji, duración esperada del vídeo, FPS, tamaño del logo, modo de las frases (`cipher` o `plain`), carpeta de wallpapers |
-| `generate.sh` | Recibe el vídeo y una carpeta, y genera `plymouth/boot-*.png` (y `off-*.png` opcional), `message.png`, `message-goodbye.png`, `logo-mask.png`, `login.ogg`, y opcionalmente `shutdown.ogg`, `session.gif` y `media.gif` (los GIF del menú de sesión y del reproductor de Caelestia; los crea `make_gif`). Puede usar las funciones de `engine/lib.sh` |
+| `generate.sh` | Recibe el vídeo y una carpeta, y genera `plymouth/boot-*.png` (y `off-*.png` opcional), `message.png`, `message-goodbye.png`, `logo-mask.png`, `login.ogg`, y opcionalmente `silhouette.png` (pantalla de bloqueo; si falta se crea desde `logo-mask.png`), `shutdown.ogg`, `session.gif` y `media.gif` (los GIF del menú de sesión y del reproductor de Caelestia; los crea `make_gif`). Puede usar las funciones de `engine/lib.sh` |
 | `banner.txt` | Título de la terminal (ASCII) |
 | `quotes.txt` | Una frase por línea; una distinta cada día |
 | `wallpapers.txt` | IDs de [Wallhaven](https://wallhaven.cc) |

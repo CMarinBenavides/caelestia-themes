@@ -48,22 +48,24 @@ restore_wallpapers() {
     mv "$SHARE/$id/wallpapers" "$wd/$folder"
 }
 
-# Cambia los GIF de Caelestia (menú de sesión y reproductor del dashboard) por los del tema,
-# guardando los originales la primera vez para poder volver a ellos con "theme default".
-#   set_gifs <tema>    usa session.gif / media.gif del tema (si los tiene); los que pongas en
-#                      ~/.config/caelestia-themes/gifs/<tema>/ tienen prioridad (GIF propios)
-#   set_gifs           restaura los originales
-set_gifs() {
-    python3 -I - "$SHELL_JSON" "$CONF/original-gifs.json" "${1:+$SHARE/$1}" "${1:+$CONF/gifs/$1}" <<'PY' && echo "  · Caelestia GIFs updated."
+# Cambia las imágenes de Caelestia por las del tema: los GIF (menú de sesión y reproductor del
+# dashboard) y la silueta de la pantalla de bloqueo y del panel de notificaciones vacío.
+# Los originales se guardan la primera vez para poder volver a ellos con "theme default".
+#   set_pictures <tema>   usa session.gif / media.gif / silhouette.png del tema (si los tiene); los que
+#                         pongas en ~/.config/caelestia-themes/gifs/<tema>/ tienen prioridad (propios)
+#   set_pictures          restaura los originales
+set_pictures() {
+    python3 -I - "$SHELL_JSON" "$CONF/original-gifs.json" "${1:+$SHARE/$1}" "${1:+$CONF/gifs/$1}" <<'PY' && echo "  · Caelestia pictures updated."
 import json, os, sys
 shell, saved, theme, custom = sys.argv[1:5]
-keys = {"sessionGif": "session.gif", "mediaGif": "media.gif"}
+keys = {"sessionGif": "session.gif", "mediaGif": "media.gif",
+        "lockNoNotifsPic": "silhouette.png", "noNotifsPic": "silhouette.png"}
 cfg = json.load(open(shell))
 paths = cfg.setdefault("paths", {})
 orig = json.load(open(saved)) if os.path.exists(saved) else None
 if theme:
-    if orig is None:
-        orig = {k: paths.get(k) for k in keys}
+    if orig is None or not all(k in orig for k in keys):
+        orig = {**{k: paths.get(k) for k in keys}, **(orig or {})}
         json.dump(orig, open(saved, "w"))
     for k, f in keys.items():
         found = [os.path.join(d, f) for d in (custom, theme) if os.path.exists(os.path.join(d, f))]
@@ -104,7 +106,7 @@ activate() {
     [ -n "$prev" ] && [ "$prev" != "$id" ] && store_wallpapers "$prev"
     mkdir -p "$CONF"; echo "$id" > "$CONF/active"
     restore_wallpapers "$id"
-    set_gifs "$id"
+    set_pictures "$id"
     [ "$opt" = "--no-plymouth" ] || set_plymouth "caelestia-$id"
     local folder wd; folder=$(conf "$id" WALLPAPER_FOLDER); wd=$(wall_dir)
     [ -n "$folder" ] && [ -d "$wd/$folder" ] && caelestia wallpaper -r "$wd/$folder" >/dev/null 2>&1 \
@@ -117,7 +119,7 @@ deactivate() {
     echo "✨ Back to the original Caelestia…"
     [ -n "$prev" ] && store_wallpapers "$prev"
     rm -f "$CONF/active"
-    set_gifs
+    set_pictures
     [ "$opt" = "--no-plymouth" ] || set_plymouth bgrt
     caelestia wallpaper -r "$(wall_dir)" >/dev/null 2>&1 && echo "  · Default wallpaper applied."
     echo "Done. New terminals will use the original Caelestia greeting."
